@@ -1,0 +1,50 @@
+package cn.zhangcy.mua.Function;
+
+import cn.zhangcy.mua.Exception.Error;
+import cn.zhangcy.mua.Runtime;
+import cn.zhangcy.mua.Value.MLiteral;
+import cn.zhangcy.mua.Value.MNull;
+import cn.zhangcy.mua.Value.MValue;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
+/**
+ * Created by zcy on 27/09/2017.
+ */
+public class CustomFunction implements Function {
+
+    private ArrayList<MValue> program;
+    private ArrayList<String> argList;
+    private Class[] argTypes;
+
+    public CustomFunction(ArrayList<MValue> argList, ArrayList<MValue> program) {
+        this.program = program;
+        this.argList = new ArrayList<String>();
+        argTypes = new Class[argList.size()];
+        for(int i = 0; i < argList.size(); i++){
+            this.argList.add(((MLiteral)argList.get(i)).getValue());
+            argTypes[i] = MValue.class;
+        }
+    }
+
+    public MValue run(Runtime ctx, MValue[] args) throws Error {
+        HashMap<String, MValue> savedLocalTable = ctx.getSymbolTable().getLocalTable();
+        HashMap<String, MValue> newLocalTable = new HashMap<String, MValue>();
+        for(int i = 0 ; i < argList.size(); i++){
+            newLocalTable.put(argList.get(i), args[i]);
+        }
+        ctx.getSymbolTable().setLocalTable(newLocalTable);
+        MValue savedOutputValue = ctx.getOutputValue();
+        ctx.setOutputValue(new MNull());
+        ctx.run(program, 1);
+        MValue returnValue = ctx.getOutputValue();
+        ctx.setOutputValue(savedOutputValue);
+        ctx.getSymbolTable().setLocalTable(savedLocalTable);
+        return returnValue;
+    }
+
+    public Class[] getArgTypes() {
+        return argTypes;
+    }
+}

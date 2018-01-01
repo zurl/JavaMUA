@@ -1,0 +1,19 @@
+group 'cn.zhangcy'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'cn.zhangcy.mua.Main'
+    }
+}
+sourceCompatibility = 1.5
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+}
