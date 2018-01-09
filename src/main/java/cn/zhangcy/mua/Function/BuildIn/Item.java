@@ -14,7 +14,7 @@ import java.util.ArrayList;
 /**
  * Created by zcy on 27/09/2017.
  */
-public class Item implements BuildInFunction {
+public class Item extends BuildInFunction {
 
     private static Class[] argTypes = {MInteger.class, MValue.class};
 

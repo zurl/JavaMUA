@@ -5,7 +5,6 @@ import cn.zhangcy.mua.Exception.SyntaxError;
 import cn.zhangcy.mua.Value.*;
 
 import java.util.ArrayList;
-import java.util.Scanner;
 import java.util.Stack;
 import java.util.regex.Pattern;
 
@@ -43,8 +42,8 @@ public class Tokenizer {
     Stack<ArrayList<MValue>> listStack = new Stack<ArrayList<MValue>>();
 
     public void cleanUp(){
-        tokens.clear();
-        listStack.clear();
+        tokens = new ArrayList<MValue>();
+        listStack = new Stack<ArrayList<MValue>>();
     }
 
     public String cleanString(String str){
@@ -60,9 +59,22 @@ public class Tokenizer {
             }
             else{
                 if( x == '+' || x == '-' || x == '*' || x == '/' || x == '%'
-                   || x == '(' || x == ')' || x == '[' || x == ']'){
+                   || x == '(' || x == ')' || x == '[' || x == ']'|| x == '='
+                        ){
                     sb.append(' ');
                     sb.append(x);
+                    sb.append(' ');
+                }
+                else if( x == '>' || x == '<' ){
+                    sb.append(' ');
+                    if( i + 1 < str.length() && str.charAt(i + 1) == '='){
+                        sb.append(' ');
+                        sb.append('=');
+                        i++;
+                    }
+                    else{
+                        sb.append(x);
+                    }
                     sb.append(' ');
                 }
                 else{
@@ -82,8 +94,17 @@ public class Tokenizer {
         for(String word : words){
             if( word.equals("") ) continue;
             if( word.charAt(0) == '+' || word.charAt(0) == '-' || word.charAt(0) == '*' || word.charAt(0) == '/'
-                    || word.charAt(0) == '%' || word.charAt(0) == '(' || word.charAt(0) == ')' ){
+                    || word.charAt(0) == '=' || word.charAt(0) == '%' || word.charAt(0) == '(' || word.charAt(0) == ')' ){
                 tokens.add(new MOpe(word.charAt(0)));
+            }
+            else if( word.charAt(0) == '<' || word.charAt(0) == '>' ){
+                if( word.length() >= 2 && word.charAt(1) == '='){
+                    if(word.charAt(0) == '<') tokens.add(new MOpe(MOpe.LTE));
+                    else if(word.charAt(0) == '>') tokens.add(new MOpe(MOpe.GTE));
+                }
+                else{
+                    tokens.add(new MOpe(word.charAt(0)));
+                }
             }
             else if( word.charAt(0) == '\'' || word.charAt(0) == '\"'){
                 tokens.add(new MLiteral(word.substring(1)));

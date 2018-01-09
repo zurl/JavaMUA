@@ -10,7 +10,7 @@ import cn.zhangcy.mua.Value.MValue;
 /**
  * Created by zcy on 27/09/2017.
  */
-public class IsName implements BuildInFunction {
+public class IsName extends BuildInFunction {
 
     private static Class[] argTypes = {MLiteral.class};
 

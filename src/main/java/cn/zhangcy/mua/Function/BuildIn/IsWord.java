@@ -10,7 +10,7 @@ import cn.zhangcy.mua.Value.MValue;
 /**
  * Created by zcy on 27/09/2017.
  */
-public class IsWord implements BuildInFunction {
+public class IsWord extends BuildInFunction {
 
     private static Class[] argTypes = {MValue.class};
 

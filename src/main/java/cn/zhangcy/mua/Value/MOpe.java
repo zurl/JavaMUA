@@ -5,6 +5,9 @@ package cn.zhangcy.mua.Value;
  */
 public class MOpe implements MValue {
 
+    public static final char LTE = 'a';
+    public static final char GTE = 'b';
+
     public char value;
 
     public MOpe(char value) {

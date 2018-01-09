@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 /**
  * Created by zcy on 27/09/2017.
  */
-public class ReadList implements BuildInFunction {
+public class ReadList extends BuildInFunction {
 
     private static Class[] argTypes = {};
 

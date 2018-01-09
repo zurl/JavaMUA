@@ -120,9 +120,7 @@ public class TestMain {
         Assert.assertEquals(test("thing \"a"), "2");
         test("make \"a 1 repeat 4 [ make \"a add thing \"a 1 ]");
         Assert.assertEquals(test("thing \"a"), "5");
-        test("make \"run [ [ \"a ] [ thing \"a ] ]");
-        Assert.assertEquals(test("run [ make \"a add thing \"a 1 ]"), "[ make a add thing a 1 ]");
-    }
+   }
 
     @Test
     public void testExpr() throws Error{

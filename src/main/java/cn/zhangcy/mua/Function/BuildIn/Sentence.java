@@ -8,10 +8,7 @@ import cn.zhangcy.mua.Value.MValue;
 
 import java.util.ArrayList;
 
-/**
- * Created by zcy on 27/09/2017.
- */
-public class List extends BuildInFunction {
+public class Sentence extends BuildInFunction {
 
     private static Class[] argTypes = {MList.class, MList.class};
 

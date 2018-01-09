@@ -12,7 +12,7 @@ import cn.zhangcy.mua.Value.MValue;
 /**
  * Created by zcy on 27/09/2017.
  */
-public class Stop implements BuildInFunction {
+public class Stop extends BuildInFunction {
 
     private static Class[] argTypes = {};
 

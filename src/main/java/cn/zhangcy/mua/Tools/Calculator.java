@@ -49,7 +49,7 @@ public class Calculator {
         else if( a instanceof MLiteral && b instanceof MLiteral)
             return new MBoolean(comparer.run(((MLiteral)a).getValue(), ((MLiteral)b).getValue()));
         else
-            throw new RuntimeError("Illegal Type to execute compare");
+            throw new RuntimeError("Illegal Type to execute compare: " + a.toString() + " and " + b.toString());
     }
 
 }

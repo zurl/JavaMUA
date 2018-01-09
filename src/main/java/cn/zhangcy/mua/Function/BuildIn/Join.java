@@ -11,7 +11,7 @@ import java.util.ArrayList;
 /**
  * Created by zcy on 27/09/2017.
  */
-public class Join implements BuildInFunction {
+public class Join extends BuildInFunction {
 
     private static Class[] argTypes = {MList.class, MValue.class};
 

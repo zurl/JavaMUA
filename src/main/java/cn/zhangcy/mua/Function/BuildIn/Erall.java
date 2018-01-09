@@ -9,7 +9,7 @@ import cn.zhangcy.mua.Value.*;
 /**
  * Created by zcy on 27/09/2017.
  */
-public class Erall implements BuildInFunction {
+public class Erall extends BuildInFunction {
 
     private static Class[] argTypes = {};
 

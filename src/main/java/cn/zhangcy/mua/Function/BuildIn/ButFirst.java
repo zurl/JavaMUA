@@ -13,7 +13,7 @@ import java.util.ArrayList;
 /**
  * Created by zcy on 27/09/2017.
  */
-public class ButFirst implements BuildInFunction {
+public class ButFirst extends BuildInFunction {
 
     private static Class[] argTypes = {MValue.class};
 

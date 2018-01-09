@@ -5,18 +5,20 @@ import cn.zhangcy.mua.Function.BuildInFunction;
 import cn.zhangcy.mua.Runtime;
 import cn.zhangcy.mua.Value.*;
 
-/**
- * Created by zcy on 27/09/2017.
- */
-public class IsList extends BuildInFunction {
+public class Int extends BuildInFunction {
 
-    private static Class[] argTypes = {MValue.class};
+    private static Class[] argTypes = {MNumber.class};
 
     public Class[] getArgTypes() {
         return argTypes;
     }
 
     public MValue run(Runtime ctx, MValue[] args) throws Error {
-        return new MBoolean(args[0] instanceof MList);
+        if( args[0] instanceof MInteger) return args[0];
+        else{
+            MReal real = (MReal) args[0];
+            Integer i = (int)real.getValue();
+            return new MInteger(i);
+        }
     }
 }

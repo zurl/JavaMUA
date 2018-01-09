@@ -4,9 +4,11 @@ import cn.zhangcy.mua.Exception.Error;
 import cn.zhangcy.mua.Exception.RuntimeError;
 import cn.zhangcy.mua.Exception.StopInterrupt;
 import cn.zhangcy.mua.Function.Function;
+import cn.zhangcy.mua.Tools.LRUCache;
 import cn.zhangcy.mua.Value.*;
 
 import java.util.ArrayList;
+import java.util.Stack;
 
 /**
  * Created by zcy on 27/09/2017.
@@ -15,12 +17,28 @@ public class Runtime {
 
     private Tokenizer tokenizer;
     private SymbolTable symbolTable;
-    private Parser parser;
+    private Stack<ArrayList<String>> errorStack;
+
+    private LRUCache<ArrayList<MValue>, ArrayList<Parser.ASTNode>> programCache;
+    private boolean enableDebug;
+
+    public Stack<ArrayList<String>> getErrorStack() {
+        return errorStack;
+    }
+
+    public void enableDebug(boolean enableDebug) {
+        this.enableDebug = enableDebug;
+    }
+
+    public boolean isEnableDebug() {
+        return enableDebug;
+    }
 
     public Runtime(Tokenizer tokenizer, SymbolTable symbolTable) {
         this.tokenizer = tokenizer;
         this.symbolTable = symbolTable;
-        this.parser = new Parser(null, symbolTable);
+        this.errorStack = new Stack<ArrayList<String>>();
+        this.programCache = new LRUCache<ArrayList<MValue>, ArrayList<Parser.ASTNode>>();
     }
 
     public SymbolTable getSymbolTable() {
@@ -61,19 +79,31 @@ public class Runtime {
         this.outputValue = outputValue;
     }
 
-    public MValue run(ArrayList<MValue> tokens, int repeat) throws Error{
-        ArrayList<Parser.ASTNode> programs = new ArrayList<Parser.ASTNode>();
-        do{
-            programs.add(parser.parse(tokens));
-        }while(!parser.isComplete());
-        parser.cleanUp();
+    public MValue run(ArrayList<MValue> tokens, int repeat) throws Error {
+        ArrayList<Parser.ASTNode> programs = programCache.find(tokens);
         MValue returnValue = new MNull();
-        for(int i = 0 ; i < repeat; i++){
+        Parser parser = new Parser(null, symbolTable);
+        if (programs == null) {
+            programs = new ArrayList<Parser.ASTNode>();
+            do {
+                programs.add(parser.parse(tokens));
+                try {
+                    returnValue = run(programs.get(programs.size() - 1));
+                } catch (StopInterrupt e) {
+                    return new MNull();
+                }
+            } while (!parser.isComplete());
+            parser.cleanUp();
+            programCache.hit(tokens, programs);
+        } else {
+            repeat ++;
+        }
+        for(int i = 1; i < repeat;i ++){
             try {
-                for(int j = 0; j < programs.size(); j++){
+                for (int j = 0; j < programs.size(); j++) {
                     returnValue = run(programs.get(j));
                 }
-            }catch (StopInterrupt e){
+            } catch (StopInterrupt e) {
                 return new MNull();
             }
         }
@@ -83,12 +113,29 @@ public class Runtime {
     public MValue run(Parser.ASTNode program) throws Error{
         Class[] types = program.function.getArgTypes();
         MValue[] arguments = new MValue[program.arguments.length];
+        if(enableDebug) {
+            errorStack.push( new ArrayList<String>() );
+            errorStack.peek().add(program.function.getName());
+        }
         for(int i = 0; i < arguments.length; i++){
             arguments[i] = run(program.arguments[i]);
+            if(enableDebug){
+                errorStack.peek().add(
+                        i + "=" +
+                        arguments[i].toString());
+            }
             if( !types[i].isInstance(arguments[i])){
-                throw new RuntimeError("Type of function " + program.function.getClass().getSimpleName().toLowerCase()  + " is incorrect");
+                throw new RuntimeError("Type of function "
+                        + program.function.getClass().getSimpleName().toLowerCase()
+                        + " is incorrect, "
+                        + " require = " + types[i].getSimpleName()
+                        + " fact = " + arguments[i].getClass().getSimpleName()
+                        + " value = " + arguments[i].toString()
+                );
             }
         }
-        return program.function.run(this, arguments);
+        MValue result = program.function.run(this, arguments);
+        if(enableDebug) errorStack.pop();
+        return result;
     }
 }

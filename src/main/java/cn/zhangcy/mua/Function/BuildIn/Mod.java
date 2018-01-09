@@ -11,7 +11,7 @@ import cn.zhangcy.mua.Value.MValue;
 /**
  * Created by zcy on 27/09/2017.
  */
-public class Mod implements BuildInFunction {
+public class Mod extends BuildInFunction {
 
     private static Class[] argTypes = {MNumber.class, MNumber.class};
 

@@ -8,7 +8,7 @@ import cn.zhangcy.mua.Value.*;
 /**
  * Created by zcy on 27/09/2017.
  */
-public class Erase implements BuildInFunction {
+public class Erase extends BuildInFunction {
 
     private static Class[] argTypes = {MLiteral.class};
 

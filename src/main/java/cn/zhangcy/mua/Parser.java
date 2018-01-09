@@ -6,9 +6,9 @@ import cn.zhangcy.mua.Exception.SyntaxError;
 import cn.zhangcy.mua.Function.BuildIn.*;
 import cn.zhangcy.mua.Function.Function;
 import cn.zhangcy.mua.Value.*;
-import com.sun.org.apache.bcel.internal.generic.FNEG;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -87,7 +87,8 @@ public class Parser {
             if( args.length != 0 ) getNext();
             else now ++;
             for(int i = 0; i < args.length; i++){
-                if(types[i] == MLiteral.class)args[i] = parseValue();
+                if(types[i] == MLiteral.class) args[i] = parseValue();
+                else if(types[i] == MBoolean.class) args[i] = parseCompare();
                 else args[i] = parseSum();
             }
             return new ASTNode(func, args);
@@ -112,7 +113,7 @@ public class Parser {
             }
             else if (op == '('){
                 getNext();
-                ASTNode value = parseSum();
+                ASTNode value = parseCompare();
                 if( isComplete() || !(program.get(now) instanceof MOpe) ||
                         ((MOpe)program.get(now)).value != ')') throw new SyntaxError(" Bracket Not Match ");
                 now ++; // Maybe at an end;
@@ -172,6 +173,33 @@ public class Parser {
         return node;
     }
 
+    private ASTNode parseCompare() throws Error{
+        getThis();
+        ASTNode node = parseSum();
+        while(!isComplete()){
+            if( program.get(now) instanceof MOpe){
+                char op = ((MOpe) program.get(now)).value;
+                if( op == '=' ||op == '<' || op == '>' || op == MOpe.GTE || op == MOpe.LTE){
+                    getNext();
+                    ASTNode right = parseSum();
+                    Function function;
+                    if (op == '<' ) function = new Lt();
+                    else if (op == '>' ) function = new Gt();
+                    else if (op == '=' ) function = new Eq();
+                    else if (op == MOpe.LTE) function = new Lte();
+                    else function = new Gte();
+                    node = new ASTNode(
+                            function,
+                            new ASTNode[]{ node, right }
+                    );
+                }
+                else break;
+            }
+            else break;
+        }
+        return node;
+    }
+
     public void cleanUp(){
         now = 0;
     }
@@ -180,9 +208,10 @@ public class Parser {
         return now >= this.program.size();
     }
 
+
     public ASTNode parse(ArrayList<MValue> program) throws Error{
         this.program = program;
-        return parseSum();
+        return parseCompare();
     }
 
 }

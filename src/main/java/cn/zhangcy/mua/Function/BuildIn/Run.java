@@ -10,7 +10,7 @@ import cn.zhangcy.mua.Value.MValue;
 /**
  * Created by zcy on 27/11/2017.
  */
-public class Run implements BuildInFunction {
+public class Run extends BuildInFunction {
 
     private static Class[] argTypes = {MList.class};
 

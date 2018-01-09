@@ -3,9 +3,11 @@ package cn.zhangcy.mua;
 import cn.zhangcy.mua.Exception.Error;
 import cn.zhangcy.mua.Exception.RuntimeError;
 import cn.zhangcy.mua.Function.BuildInFunctionLoader;
+import cn.zhangcy.mua.Value.MList;
 import cn.zhangcy.mua.Value.MValue;
 import cn.zhangcy.mua.Value.MWord;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -13,74 +15,101 @@ import java.util.HashMap;
  */
 public class SymbolTable {
 
-    private HashMap<String, MValue> buildInTable = new HashMap<String, MValue>();
-    private HashMap<String, MValue> globalTable = new HashMap<String, MValue>();
-    private HashMap<String, MValue> localTable = new HashMap<String, MValue>();
+    static class SubSymbolTable{
+        HashMap<String, MValue> data;
+        SubSymbolTable prev;
+
+        SubSymbolTable(SubSymbolTable prev) {
+            this.data = new HashMap<String, MValue>();
+            this.prev = prev;
+        }
+    }
+
+    private SubSymbolTable root, globalTable;
 
     public SymbolTable() {
-        BuildInFunctionLoader.load(this.buildInTable);
+        root = new SubSymbolTable(null);
+        BuildInFunctionLoader.load(root.data);
+        root = new SubSymbolTable(root);
+        globalTable = root;
     }
 
-    public HashMap<String, MValue> getGlobalTable() {
-        return globalTable;
+    public MValue getSymbol(String name) throws Error{
+        SubSymbolTable now = root;
+        while ( now != null){
+            MValue mValue = now.data.get(name);
+            if(mValue != null) return mValue;
+            now = now.prev;
+        }
+        return null;
     }
 
-    public HashMap<String, MValue> getLocalTable() {
-        return localTable;
-    }
-
-    public MValue getSymbol(String name){
-        MValue var = localTable.get(name);
-        if(var == null) var = globalTable.get(name);
-        if(var == null) var = buildInTable.get(name);
-        return var;
+    public void setGlobalSymbol(String name, MValue value) throws Error{
+        if( globalTable.prev.data.get(name) != null)
+            throw new RuntimeError("You cannot re-assign a build-in word");
+        globalTable.data.put(name, value);
     }
 
     public void setSymbol(String name, MValue value) throws Error{
-        if(buildInTable.get(name) != null){
+        if( globalTable.prev.data.get(name) != null)
             throw new RuntimeError("You cannot re-assign a build-in word");
-        }
-        MValue var = localTable.get(name);
-        if(var == null){
-            globalTable.put(name, value);
-        }
-        else{
-            localTable.put(name, value);
-        }
+        root.data.put(name, value);
     }
 
     public void removeSymbol(String name) throws Error {
-        MValue var = localTable.get(name);
-        if(var == null){
-            var = globalTable.get(name);
-            if( var == null){
-                throw new RuntimeError("`" + name + "` is undefined .");
+        SubSymbolTable now = root;
+        while ( now != null){
+            MValue mValue = now.data.get(name);
+            if(mValue != null){
+                if( now.prev == null){
+                    throw new RuntimeError("`" + name + "` cannot be removed ."); }
+                else{
+                    now.data.remove(name);
+                }
             }
-            else{
-                globalTable.remove(name);
-            }
-        }
-        else{
-            localTable.remove(name);
+            now = now.prev;
         }
     }
 
-    public void setLocalTable(HashMap<String, MValue> localTable) {
-        this.localTable = localTable;
+    public void createSubSymbolTable(){
+        root = new SubSymbolTable(root);
+    }
+
+    public void removeSubSymbolTable(){
+        root = root.prev;
     }
 
     public void displayAll(){
-        for(String key : globalTable.keySet()){
-            System.out.println(key + " : " + globalTable.get(key).toString());
-        }
-        for(String key : localTable.keySet()){
-            System.out.println(key + " : " + localTable.get(key).toString());
+        SubSymbolTable now = root;
+        while ( now != null){
+            for(String key : now.data.keySet()){
+                System.out.println(key + " : " + now.data.get(key).toString());
+            }
+            now = now.prev;
         }
     }
 
     public void cleanAll(){
-        globalTable = new HashMap<String, MValue>();
-        localTable = new HashMap<String, MValue>();
+        root.data = new HashMap<String, MValue>();
     }
 
+    public String toString(){
+        StringBuilder stringBuilder = new StringBuilder();
+        SubSymbolTable now = root;
+        while ( now.prev != null){
+            for(String key : now.data.keySet()){
+                stringBuilder.append("make \"");
+                stringBuilder.append(key);
+                stringBuilder.append(" ");
+                stringBuilder.append(now.data.get(key).toRawString());
+                stringBuilder.append("\n");
+            }
+            now = now.prev;
+        }
+        return stringBuilder.toString();
+    }
+
+    public SubSymbolTable getGlobalTable() {
+        return globalTable;
+    }
 }

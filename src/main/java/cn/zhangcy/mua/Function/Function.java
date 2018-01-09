@@ -11,5 +11,5 @@ public interface Function {
 
     Class[] getArgTypes();
     MValue run(Runtime ctx, MValue[] args) throws Error;
-
+    String getName();
 }

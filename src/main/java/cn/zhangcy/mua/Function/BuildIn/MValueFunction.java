@@ -13,7 +13,7 @@ import java.util.Scanner;
 /**
  * Created by zcy on 22/11/2017.
  */
-public class MValueFunction implements BuildInFunction {
+public class MValueFunction extends BuildInFunction {
 
     private static Class[] argTypes = {};
 
@@ -30,4 +30,5 @@ public class MValueFunction implements BuildInFunction {
     public MValue run(Runtime ctx, MValue[] args) throws Error {
         return value;
     }
+    
 }

@@ -13,7 +13,7 @@ import java.util.Scanner;
 /**
  * Created by zcy on 27/09/2017.
  */
-public class Read implements BuildInFunction {
+public class Read extends BuildInFunction {
 
     private static Class[] argTypes = {};
 

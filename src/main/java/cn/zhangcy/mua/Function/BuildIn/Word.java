@@ -9,7 +9,7 @@ import cn.zhangcy.mua.Value.*;
 /**
  * Created by zcy on 27/09/2017.
  */
-public class Word implements BuildInFunction {
+public class Word extends BuildInFunction {
 
     private static Class[] argTypes = {MLiteral.class, MValue.class};
 

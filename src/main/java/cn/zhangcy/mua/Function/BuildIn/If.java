@@ -11,7 +11,7 @@ import cn.zhangcy.mua.Value.MValue;
 /**
  * Created by zcy on 27/11/2017.
  */
-public class If  implements BuildInFunction {
+public class If extends BuildInFunction {
 
     private static Class[] argTypes = {MBoolean.class, MList.class, MList.class};
 

@@ -21,10 +21,10 @@ public class MList implements MValue {
             if( mValue1 instanceof MList && mValue2 instanceof MList){
                 boolean isFunc = true;
                 for(MValue mValue : ((MList) mValue1).getValue()){
-                    if(!(mValue instanceof MLiteral )) isFunc = false;
+                    if(!(mValue instanceof MLiteral || mValue instanceof MWord)) isFunc = false;
                 }
                 if(isFunc){
-                    customFunction = new CustomFunction(((MList) mValue1).getValue(), ((MList) mValue2).getValue());
+                    customFunction = new CustomFunction(((MList) mValue1).getValue(), ((MList) mValue2).getValue(), this);
                 }
             }
         }

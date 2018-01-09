@@ -10,7 +10,7 @@ import cn.zhangcy.mua.Value.MValue;
 /**
  * Created by zcy on 27/09/2017.
  */
-public class Make implements BuildInFunction {
+public class Make extends BuildInFunction {
 
     private static Class[] argTypes = {MLiteral.class, MValue.class};
 

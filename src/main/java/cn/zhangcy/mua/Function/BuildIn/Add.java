@@ -10,7 +10,7 @@ import cn.zhangcy.mua.Value.MValue;
 /**
  * Created by zcy on 27/09/2017.
  */
-public class Add implements BuildInFunction {
+public class Add extends BuildInFunction {
 
     private static Class[] argTypes = {MNumber.class, MNumber.class};
 

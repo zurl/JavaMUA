@@ -9,7 +9,7 @@ import cn.zhangcy.mua.Value.*;
 /**
  * Created by zcy on 27/09/2017.
  */
-public class First implements BuildInFunction {
+public class First extends BuildInFunction {
 
     private static Class[] argTypes = {MValue.class};
 

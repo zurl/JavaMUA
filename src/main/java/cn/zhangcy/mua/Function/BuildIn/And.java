@@ -9,7 +9,7 @@ import cn.zhangcy.mua.Value.MValue;
 /**
  * Created by zcy on 27/09/2017.
  */
-public class And implements BuildInFunction {
+public class And extends BuildInFunction {
 
     private static Class[] argTypes = {MBoolean.class, MBoolean.class};
 

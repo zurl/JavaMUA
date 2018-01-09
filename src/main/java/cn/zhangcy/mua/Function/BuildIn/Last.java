@@ -13,7 +13,7 @@ import java.util.ArrayList;
 /**
  * Created by zcy on 27/09/2017.
  */
-public class Last implements BuildInFunction {
+public class Last extends BuildInFunction {
 
     private static Class[] argTypes = {MValue.class};
 
