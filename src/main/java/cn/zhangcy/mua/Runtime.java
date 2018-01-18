@@ -110,6 +110,8 @@ public class Runtime {
         return returnValue;
     }
 
+    public static final boolean enableDebugASM = false;
+
     public MValue run(Parser.ASTNode program) throws Error{
         Class[] types = program.function.getArgTypes();
         MValue[] arguments = new MValue[program.arguments.length];
@@ -134,7 +136,20 @@ public class Runtime {
                 );
             }
         }
+
         MValue result = program.function.run(this, arguments);
+        if(enableDebugASM){
+            StringBuilder asm = new StringBuilder();
+            asm.append(program.function.getName());
+            asm.append("(");
+            for(int i = 0; i < arguments.length; i++) {
+                asm.append(arguments[i].toRawString());
+                if (i != arguments.length - 1) asm.append(",");
+            }
+            asm.append(")=");
+            asm.append(result.toRawString());
+            System.out.println(asm.toString());
+        }
         if(enableDebug) errorStack.pop();
         return result;
     }

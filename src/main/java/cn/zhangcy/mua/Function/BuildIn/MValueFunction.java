@@ -30,5 +30,5 @@ public class MValueFunction extends BuildInFunction {
     public MValue run(Runtime ctx, MValue[] args) throws Error {
         return value;
     }
-    
+
 }

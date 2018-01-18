@@ -63,8 +63,9 @@ public class TestWK {
         test("make \"sqrt_iter [[guess x] [\n" +
                 "if abs (:guess * :guess - :x) < 0.00001\n" +
                 "[output :guess]\n" +
-                " [output sqrt_iter ((:guess+:x/:guess)/2) :x]\n" +
+                "[output sqrt_iter ((:guess+:x/:guess)/2) :x]\n" +
                 "]]");
+        System.out.println(testRaw("sqrt_iter 1.0 10"));
         Assert.assertEquals(
                 Math.abs(((MReal)testRaw("sqrt_iter 1.0 10")).getValue() -
                         Math.sqrt(10))

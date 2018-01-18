@@ -44,18 +44,17 @@ public class SymbolTable {
         return null;
     }
 
-    public void setGlobalSymbol(String name, MValue value) throws Error{
-        if( globalTable.prev.data.get(name) != null)
-            throw new RuntimeError("You cannot re-assign a build-in word");
-        globalTable.data.put(name, value);
-    }
-
     public void setSymbol(String name, MValue value) throws Error{
         if( globalTable.prev.data.get(name) != null)
             throw new RuntimeError("You cannot re-assign a build-in word");
         root.data.put(name, value);
     }
 
+    public void setGlobalSymbol(String name, MValue value) throws Error{
+        if( globalTable.prev.data.get(name) != null)
+            throw new RuntimeError("You cannot re-assign a build-in word");
+        globalTable.data.put(name, value);
+    }
     public void removeSymbol(String name) throws Error {
         SubSymbolTable now = root;
         while ( now != null){

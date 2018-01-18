@@ -1,5 +1,7 @@
 package cn.zhangcy.mua;
 
+import java.io.InputStream;
+
 /**
  * Created by zcy on 27/09/2017.
  */
@@ -8,5 +10,6 @@ public class Main {
         System.out.println("MUA Interpreter v0.3.0 by zhangcy");
         Interpreter interpreter = new Interpreter();
         interpreter.run();
+        InputStream is;
     }
 }
